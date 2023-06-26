@@ -45,7 +45,6 @@ export async function searchUsers(req: Request, res: Response) {
     const { search } = req.body
     try {
         const results = await usersService.SearchUsers(search)
-        console.log(results)
         return res.status(httpStatus.OK).send(results)
     } catch (error) {
         return res.status(httpStatus.BAD_REQUEST)

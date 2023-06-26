@@ -24,7 +24,6 @@ async function login(email: string, password: string) {
   if (!checkEmail) throw credencialsError()
 
   const checkPassword = await bcrypt.compare(password, checkEmail.password)
-  console.log(checkPassword)
   if (!checkPassword) throw credencialsError()
 
   const token = sign({ id: checkEmail.id }, process.env.JWT_SECRET, { expiresIn: 86000 });

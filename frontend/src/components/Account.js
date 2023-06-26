@@ -22,7 +22,6 @@ export default function Account() {
         event.preventDefault()
         const payload = { email, password }
         try {
-            console.log(payload)
             const log = await axios.post(process.env.NEXT_PUBLIC_REACT_APP_API_URL + "/users/signin", payload)
             setCoins(log.data.checkEmail.coins)
             localStorage.setItem("token", log.data.token)

@@ -13,7 +13,6 @@ export default function Blackjack() {
   const [gameState, setGameState] = useState('');
   const [betAmount, setBetAmount] = useState(0);
   const { coins,setCoins } = useContext(CoinsContext)
-  console.log(playerHand, dealerHand)
 
   useEffect(() => {
     initializeDeck();
@@ -21,7 +20,6 @@ export default function Blackjack() {
   useEffect(() => {
     const playerTotal = calculateHandValue(playerHand);
     const dealerTotal = calculateHandValue(dealerHand);
-    console.log(dealerTotal)
 
     if (playerTotal > 21) {
       setGameState('dealer_win');
@@ -152,7 +150,6 @@ const compareHands = (playerTotal, dealerTotal) => {
     setBetAmount(0);
   };
 
-  console.log(gameState)
   const renderGameResult = () => {
     if (gameState === 'player_win') {
       return <p>Você ganhou!</p>;
@@ -165,22 +162,18 @@ const compareHands = (playerTotal, dealerTotal) => {
   
 
 async function serverComunication(win){
-  console.log('entrou');
   try {
     const token = localStorage.getItem('token');
     const enviar = { headers: { Authorization: token } };
     const payload = { gameId: 1, coins: betAmount, odds: 2, win };
-    console.log(payload);
     const response =await axios.post(process.env.NEXT_PUBLIC_REACT_APP_API_URL + '/bet', payload, enviar);
     setCoins(response.data.coins)
-    console.log(response, '2');
   } catch (error) {
     console.log(error);
   }
 };
 
 const handleGameResult = (result) => {
-  console.log("entrou2")
   let win = null;
   if (result === 'player_win') {
     win = true;
