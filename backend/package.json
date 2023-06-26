@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "ttsc -p tsconfig.build.json",
-    "start": "node dist/index.js",
+    "build": "npx tsc && tsc-alias dist/index.js",
+    "start": "npm run prisma:migrate:deploy node dist/index.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles -i",
-    "dev": " nodemon 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/index.ts'"
+    "dev": " nodemon 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/index.ts'",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
@@ -42,6 +44,7 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.6",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3",
     "typescript-transform-paths": "^3.4.6"
