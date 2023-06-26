@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model bet {
+  id     Int      @id @default(autoincrement())
+  gameId Int
+  userId Int
+  coins  Int
+  odds   Decimal @db.Decimal(4, 2)
+  win    Boolean
+  date   DateTime @default(now()) @db.Timestamp(6)
+  games  games?    @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bet_fk0")
+  feed   feed[]
+  users  users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bet_fk1")
+}
+
+
+model contest {
+  id           Int            @id @default(autoincrement())
+  prize        Int
+  startAt      DateTime       @db.Timestamp(6)
+  endAt        DateTime       @db.Timestamp(6)
+  feed         feed[]
+  participants participants[]
+}
+
+model feed {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  description String?
+  betId       Int?
+  gameId      Int?
+  contestId   Int?
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  users       users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "feed_fk0")
+  bet         bet?     @relation(fields: [betId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "feed_fk1")
+  games       games?   @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "feed_fk2")
+  contest     contest? @relation(fields: [contestId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "feed_fk3")
+}
+
+model follows {
+  id                               Int      @id @default(autoincrement())
+  followerId                       Int
+  followingId                      Int
+  createdAt                        DateTime @default(now()) @db.Timestamp(6)
+  users_follows_followerIdTousers  users    @relation("follows_followerIdTousers", fields: [followerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "follows_fk0")
+  users_follows_followingIdTousers users    @relation("follows_followingIdTousers", fields: [followingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "follows_fk1")
+}
+
+model games {
+  id   Int    @id @default(autoincrement())
+  name String
+  bet  bet[]
+  feed feed[]
+}
+
+model participants {
+  contestId Int
+  userId    Int
+  contest   contest @relation(fields: [contestId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participants_fk0")
+  users     users   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participants_fk1")
+
+  @@id([contestId, userId])
+}
+
+model users {
+  id                                 Int            @id @default(autoincrement())
+  username                           String         @unique
+  email                              String         @unique
+  password                           String
+  pictureUrl                         String
+  createdAt                          DateTime       @default(now()) @db.Timestamp(6)
+  coins                              Int            @default(1000)
+  dailyCoins                         DateTime       @default(now()) @db.Timestamp(6)
+  feed                               feed[]
+  follows_follows_followerIdTousers  follows[]      @relation("follows_followerIdTousers")
+  follows_follows_followingIdTousers follows[]      @relation("follows_followingIdTousers")
+  participants                       participants[]
+  bet  bet[]
+
+}

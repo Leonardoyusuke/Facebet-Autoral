@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "feed" ALTER COLUMN "betId" DROP NOT NULL,
+ALTER COLUMN "gameId" DROP NOT NULL;
